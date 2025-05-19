@@ -5,3 +5,7 @@ Upstart Project Interview
 
 - cd upstart-playground
 - npm run dev
+
+### Backend
+- cd backend
+- uvicorn app.main:app --reloadapp --reload
