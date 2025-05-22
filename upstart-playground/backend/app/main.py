@@ -2,12 +2,10 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.middleware.security import SecurityHeadersMiddleware
 from app.routers import auth_router
+from app.database import engine
+from app import models
 
-# Import database and models
-from .database import engine
-from . import models
-
-# Create tables in the database
+# Create database tables
 models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
@@ -15,10 +13,11 @@ app = FastAPI()
 # Configure CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],  # Your frontend URL
+    allow_origins=["http://localhost:5173"],
     allow_credentials=True,
-    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allow_headers=["Content-Type", "Authorization", "Accept"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+    expose_headers=["*"],
     max_age=3600,
 )
 
@@ -26,7 +25,7 @@ app.add_middleware(
 app.add_middleware(SecurityHeadersMiddleware)
 
 # Include routers
-app.include_router(auth_router, prefix="/auth", tags=["auth"])
+app.include_router(auth_router, tags=["auth"])
 
 @app.get("/")
 async def root():

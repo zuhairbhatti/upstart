@@ -8,7 +8,7 @@ from sqlalchemy.sql import func
 from .database import Base
 
 # Now define your models using Base
-class User(Base):
+class Users(Base):
     __tablename__ = "users"
     
     id = Column(Integer, primary_key=True, index=True)

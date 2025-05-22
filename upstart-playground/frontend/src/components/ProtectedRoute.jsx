@@ -1,6 +1,5 @@
 import { Navigate, useLocation } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import { checkPermission } from '../api/endpoints';
 
 const ProtectedRoute = ({ children, requiredPermission = null }) => {
     const location = useLocation();

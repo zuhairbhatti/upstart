@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { login } from '../api/endpoints';
+import { login, register } from '../api/endpoints';
 
 const Login = ({ onLogin }) => {
     const [username, setUsername] = useState('');
@@ -8,9 +8,11 @@ const Login = ({ onLogin }) => {
     const [error, setError] = useState('');
     const navigate = useNavigate();
     const location = useLocation();
+    const [loginScreen, setLoginScreen] = useState(true);
 
     // Get the redirect path from location state or default to dashboard
     const from = location.state?.from?.pathname || '/dashboard';
+    console.log(from, 'from');
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -25,50 +27,86 @@ const Login = ({ onLogin }) => {
         }
     };
 
+    const handleRegister = async (e) => {
+        e.preventDefault();
+        setError('');
+        
+        try {
+            await register(username, password);
+            onLogin();
+            navigate(from, { replace: true });
+        } catch (err) {
+            setError(err.response?.data?.detail || 'Registration failed');
+        }
+    };
+
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-50">
-            <div className="max-w-md w-full space-y-8 p-8 bg-white rounded-lg shadow">
-                <h2 className="text-center text-3xl font-bold">Login</h2>
-                {error && (
-                    <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
-                        {error}
-                    </div>
-                )}
-                <form onSubmit={handleSubmit} className="space-y-6">
+        <div>
+            {loginScreen ? (
+                <>
+                    <h2>Login</h2>
+                    {error && <div>{error}</div>}
+                    <form onSubmit={handleSubmit}>
+                        <div>
+                            <label htmlFor="username">Username</label>
+                            <input
+                                type="text"
+                                id="username"
+                                value={username}
+                                onChange={(e) => setUsername(e.target.value)}
+                                required
+                            />
+                        </div>
+                        <div>
+                            <label htmlFor="password">Password</label>
+                            <input
+                                type="password"
+                                id="password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                required
+                            />
+                        </div>
+                        <button type="submit">Sign in</button>
+                    </form>
+                        <div>
+                            <p>Don't have an account?</p>
+                            <a onClick={() => setLoginScreen(false)}>Register</a>
+                        </div>
+                </>
+            ) : (
+                <>
+                    <h2>Register</h2>
+                    {error && <div>{error}</div>}
+                    <form onSubmit={handleRegister}>
+                        <div>
+                            <label htmlFor="username">Username</label>
+                            <input
+                                type="text"
+                                id="username"
+                                value={username}
+                                onChange={(e) => setUsername(e.target.value)}
+                                required
+                            />
+                        </div>
+                        <div>
+                            <label htmlFor="password">Password</label>
+                            <input
+                                type="password"
+                                id="password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                required
+                            />
+                        </div>
+                        <button type="submit">Sign up</button>
+                    </form>
                     <div>
-                        <label htmlFor="username" className="block text-sm font-medium text-gray-700">
-                            Username
-                        </label>
-                        <input
-                            type="text"
-                            id="username"
-                            value={username}
-                            onChange={(e) => setUsername(e.target.value)}
-                            required
-                            className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2"
-                        />
+                        <p>Have an account?</p>
+                        <a onClick={() => setLoginScreen(true)}>Login</a>
                     </div>
-                    <div>
-                        <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-                            Password
-                        </label>
-                        <input
-                            type="password"
-                            id="password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            required
-                            className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2"
-                        />
-                    </div>
-                    <button
-                        type="submit"
-                        className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700"
-                    >
-                        Sign in
-                    </button>
-                </form>
-            </div>
+                </>
+            )}
         </div>
     );
 };

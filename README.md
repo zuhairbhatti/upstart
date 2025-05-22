@@ -8,4 +8,8 @@ Upstart Project Interview
 
 ### Backend
 - cd upstart-playground/backend
-- uvicorn app.main:app --reload
+- uvicorn app.main:app --reload --port 8000
+
+### DB
+- cd upstart-playground/backend
+- sqlite3 app.db ".tables"

@@ -1,10 +1,12 @@
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker, Session
-from contextlib import contextmanager
+from sqlalchemy.orm import sessionmaker
+import os
 
-# SQLite connection string - this creates a file named 'app.db' in your current directory
-SQLALCHEMY_DATABASE_URL = "sqlite:///./app.db"
+# Get the absolute path to the backend directory
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+# SQLite connection string with absolute path
+SQLALCHEMY_DATABASE_URL = f"sqlite:///{os.path.join(BASE_DIR, 'app.db')}"
 
 # Create the SQLAlchemy engine
 engine = create_engine(
