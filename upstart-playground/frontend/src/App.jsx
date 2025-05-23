@@ -1,11 +1,12 @@
-import { useState, useEffect } from 'react'
-import { BrowserRouter, Route, Routes } from 'react-router-dom'
-import ProtectedRoute from './components/ProtectedRoute'
-import Login from './pages/Login'
+import React, { useState, useEffect } from "react";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import Login from "./pages/Login";
+import CreateBoard from "./pages/CreateBoard";
+import Board from "./pages/Board";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  console.log('hey', isLoggedIn);
+
   useEffect(() => {
     // Check if user is authenticated on app load
     const checkAuth = () => {
@@ -17,25 +18,21 @@ function App() {
   }, []);
 
   return (
-    <BrowserRouter>
-      <div>
-        <Routes>
-          {!isLoggedIn ? (
-            <Route path="/login" element={<Login onLogin={() => setIsLoggedIn(true)} />} />
-          ) : (
-            <Route 
-              path="/*" 
-              // element={
-              //   <ProtectedRoute>
-              //     {/* <Dashboard onLogout={() => setIsLoggedIn(false)} /> */}
-              //   </ProtectedRoute>
-              // } 
-            />
-          )}
-        </Routes>
-      </div>
-    </BrowserRouter>
-  )
+    <Router>
+      <Routes>
+        {!isLoggedIn ? (
+          // Show login page if not authenticated
+          <Route path="*" element={<Login onLogin={() => setIsLoggedIn(true)} />} />
+        ) : (
+          // Show other pages if authenticated
+          <>
+            <Route path="/create-board" element={<CreateBoard />} />
+            <Route path="/board/:id" element={<Board />} />
+          </>
+        )}
+      </Routes>
+    </Router>
+  );
 }
 
-export default App
+export default App;

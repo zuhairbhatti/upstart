@@ -12,4 +12,5 @@ Upstart Project Interview
 
 ### DB
 - cd upstart-playground/backend
+<!-- To view all tables in the Database -->
 - sqlite3 app.db ".tables"
